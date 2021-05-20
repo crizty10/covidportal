@@ -1,0 +1,114 @@
+{% extends 'beds/index.html' %}
+
+{% block content %}
+<div class="w3-container mt-4 pt-4 pb-4">
+    <div class="w3-quarter">
+      <div class="w3-container w3-blue w3-padding-16">
+        <div class="w3-left"><i class="fa fa-bed w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3>{{ normal_beds.total }}</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Normal Beds</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-green w3-padding-16">
+        <div class="w3-left"><i class="fa fa-bed w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3>{{ covid_beds.total }}</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Covid Beds</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-yellow w3-padding-16">
+        <div class="w3-left"><i class="fa fa-bed w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3>{{ icu.total }}</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>ICU Beds</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-red w3-text-white w3-padding-16">
+        <div class="w3-left"><i class="fa fa-bed w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3>{{ ventilator.total }}</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Ventilator</h4>
+      </div>
+    </div>
+</div>
+
+
+<div class="w3-container w3-mt-3">
+  <center><h3 class="mb-3"><b>Hospital Information</b></h3></center>
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <br>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th class="text-center">Name</th>
+        <th class="text-center">Location</th>
+        <th class="text-center">District</th>
+        <th class="text-center">Normal Beds</th>
+        <th class="text-center">Covid Beds</th>
+        <th class="text-center">ICU Beds</th>
+        <th class="text-center">Ventilator Beds</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hospital in hospitals %}
+        <tr>
+          <td>{{ hospital.name }}</td>
+          <td>{{ hospital.location }}</td>
+          <td>{{ hospital.get_district_display }}</td>
+          <td>{{ hospital.normal_beds }}</td>
+          <td>{{ hospital.covid_beds }}</td>
+          <td>{{ hospital.icu_beds }}</td>
+          <td>{{ hospital.ventilator }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if hospitals.has_other_pages %}
+  <nav aria-label="Pagination">
+    <ul class="pagination justify-content-center">
+      {% if hospitals.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ hospitals.previous_page_number }}">Previous</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+      {% endif %}
+      {% for i in hospitals.paginator.page_range %}
+        {% if hospitals.number == i %}
+          <li class="page-item active"><a class="page-link" href="#"><span>{{ i }} <span class="sr-only">(current)</span></span></a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if hospitals.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ hospitals.next_page_number }}">Next</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+  <div style="height:120px;"></div>
+</div>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+{% endblock %}
